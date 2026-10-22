@@ -28,10 +28,21 @@
     .submit-btn { width: 100%; background: linear-gradient(90deg, var(--gold), #b8952b); color: var(--black); border: none; padding: 20px; font-size: 16px; font-weight: 600; font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: 2px; border-radius: 6px; cursor: pointer; margin-top: 40px; transition: transform 0.2s; }
     .submit-btn:hover { transform: translateY(-2px); }
 
+    /* Скрытый блок с результатами */
     #result { display: none; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(212, 175, 55, 0.3); text-align: center; }
-    .btn { display: block; width: 100%; padding: 18px; margin-top: 10px; text-decoration: none; font-size: 15px; font-weight: 600; text-transform: uppercase; border-radius: 6px; letter-spacing: 1px; transition: all 0.2s; cursor: pointer; border: none; }
+    .btn { display: block; width: 100%; padding: 16px; margin-top: 10px; text-decoration: none; font-size: 14px; font-weight: 600; text-transform: uppercase; border-radius: 6px; letter-spacing: 1px; transition: all 0.2s; cursor: pointer; border: none; text-align: center; }
+    
     .btn-tg { background: #229ED9; color: white; }
+    .btn-tg:hover { background: #1a7fb0; }
+    
     .btn-email { background: transparent; color: var(--light-gold); border: 1px solid var(--gold); }
+    .btn-email:hover { background: rgba(212, 175, 55, 0.1); }
+
+    /* Меню выбора почты */
+    #emailChoice { display: none; margin-top: 10px; background: #222; padding: 15px; border-radius: 6px; border: 1px solid #D4AF37; text-align: left;}
+    #emailChoice p { color: var(--light-gold); margin-bottom: 10px; font-size: 13px; text-align: center;}
+    .email-link { display: block; padding: 12px; margin-bottom: 5px; background: #fff; color: #000; text-decoration: none; border-radius: 4px; font-weight: bold; text-align: center; font-size: 14px;}
+    .email-link:hover { background: #ddd; }
 
     @media (max-width: 600px) { .form-row { flex-direction: column; gap: 0; } .container { padding: 25px 20px; } }
 </style>
@@ -89,7 +100,7 @@
         <div class="form-row">
             <div class="form-group"><label>Город кандидата</label><input type="text" id="cand_city" placeholder="Где должен жить?"></div>
             <div class="form-group"><label>Возраст кандидата</label><input type="text" id="cand_age" placeholder="От и до"></div>
-            </div>
+        </div>
         <div class="form-group"><label>Образование</label><input type="text" id="cand_edu" placeholder="ВО / не важно"></div>
         <div class="form-group"><label>Сфера деятельности</label><input type="text" id="cand_job" placeholder="Бизнес, творчество..."></div>
         <div class="form-row">
@@ -115,56 +126,78 @@
             <div class="form-group"><label>Удобное время для звонка</label><input type="text" id="call_time" placeholder="После 18:00"></div>
         </div>
 
-        <button type="submit" class="submit-btn" id="saveBtn">Отправить анкету</button>
+        <button type="submit" class="submit-btn">Отправить анкету</button>
     </form>
 
     <div id="result">
         <p style="color: var(--light-gold); margin-bottom: 20px; font-weight: 500;">
-            Анкета сформирована!<br>Выберите способ отправки:
+            Анкета сформирована!<br>Выберите, куда отправить (текст скопируется автоматически):
         </p>
-        <a href="tg://resolve?domain=formula_alena" class="btn btn-tg" target="_blank">Скопировать текст и открыть Telegram</a>
-        <button onclick="copyAndEmail()" class="btn btn-email">Отправить на почту</button>
+        
+        <button onclick="sendToTG()" class="btn btn-tg">Отправить в Telegram</button>
+        
+        <button onclick="showEmailOptions()" class="btn btn-email">Отправить на почту</button>
+        
+        <div id="emailChoice">
+            <p>Выберите ваш почтовый сервис:</p>
+            <a href="https://mail.yandex.ru/compose?to=oksanchick84@ya.ru" target="_blank" class="email-link" onclick="copyText()">Яндекс.Почта</a>
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=oksanchick84@ya.ru" target="_blank" class="email-link" onclick="copyText()">Gmail</a>
+            <a href="https://e.mail.ru/compose/?to=oksanchick84@ya.ru" target="_blank" class="email-link" onclick="copyText()">Mail.ru</a>
+        </div>
     </div>
 </div>
 
 <script>
+    var fullText = ""; // Глобальная переменная для текста
+    // Сбор данных
     document.getElementById('anketaForm').addEventListener('submit', function(e) {
         e.preventDefault();
         var getVal = function(id) { return document.getElementById(id).value || '-'; };
         
-        var text = "ФОРМУЛА ЗНАКОМСТВ - АНКЕТА\n\n";
-        text += "1.1 Имя: " + getVal('name') + "\n1.2 Возраст: " + getVal('age') + "\n1.3 Город: " + getVal('city') + "\n";
-        text += "1.4 Рост/Вес: " + getVal('body') + "\nСемейное положение: " + getVal('marital') + "\n";
-        text += "1.5 Профессия: " + getVal('job') + "\n1.6 Увлечение: " + getVal('hobby') + "\n\n";
-        text += "2.1 Табу: " + getVal('taboo') + "\n2.2 Не принимаю: " + getVal('no_accept') + "\n";
-        text += "2.3 Важно: " + getVal('important') + "\n2.4 Дети: " + getVal('kids') + "\n\n";
-        text += "3.1 Выходной: " + getVal('weekend') + "\n3.2 Свободное время: " + getVal('leisure') + "\n3.3 80% времени: " + getVal('free_time') + "\n\n";
-        text += "4.1 Разрушало: " + getVal('past') + "\n4.2 Боится: " + getVal('fears') + "\n\n";
-        text += "5.1 Качества: " + getVal('qualities') + "\n5.2 Доказательство: " + getVal('proof') + "\n5.3 Доход: " + getVal('income') + "\n\n";
-        text += "6. О КАНДИДАТЕ:\nГород: " + getVal('cand_city') + "\nВозраст: " + getVal('cand_age') + "\n";
-        text += "Образование: " + getVal('cand_edu') + "\nСфера: " + getVal('cand_job') + "\nДети: " + getVal('cand_kids') + "\nЖилье: " + getVal('cand_housing') + "\n\n";
-        text += "7. САМОПРЕЗЕНТАЦИЯ:\n1: " + getVal('pres_1') + "\n2: " + getVal('pres_2') + "\n3: " + getVal('pres_3') + "\n4: " + getVal('pres_4') + "\n5: " + getVal('pres_5') + "\n6: " + getVal('pres_6') + "\n7: " + getVal('pres_7') + "\n\n";
-        text += "9. КОНТАКТЫ:\nТелефон/TG: " + getVal('phone') + "\nВремя: " + getVal('call_time') + "\n\n";
+        fullText = "ФОРМУЛА ЗНАКОМСТВ - АНКЕТА\n\n";
+        fullText += "1.1 Имя: " + getVal('name') + "\n1.2 Возраст: " + getVal('age') + "\n1.3 Город: " + getVal('city') + "\n";
+        fullText += "1.4 Рост/Вес: " + getVal('body') + "\nСемейное положение: " + getVal('marital') + "\n";
+        fullText += "1.5 Профессия: " + getVal('job') + "\n1.6 Увлечение: " + getVal('hobby') + "\n\n";
+        fullText += "2.1 Табу: " + getVal('taboo') + "\n2.2 Не принимаю: " + getVal('no_accept') + "\n";
+        fullText += "2.3 Важно: " + getVal('important') + "\n2.4 Дети: " + getVal('kids') + "\n\n";
+        fullText += "3.1 Выходной: " + getVal('weekend') + "\n3.2 Свободное время: " + getVal('leisure') + "\n3.3 80% времени: " + getVal('free_time') + "\n\n";
+        fullText += "4.1 Разрушало: " + getVal('past') + "\n4.2 Боится: " + getVal('fears') + "\n\n";
+        fullText += "5.1 Качества: " + getVal('qualities') + "\n5.2 Доказательство: " + getVal('proof') + "\n5.3 Доход: " + getVal('income') + "\n\n";
+        fullText += "6. О КАНДИДАТЕ:\nГород: " + getVal('cand_city') + "\nВозраст: " + getVal('cand_age') + "\n";
+        fullText += "Образование: " + getVal('cand_edu') + "\nСфера: " + getVal('cand_job') + "\nДети: " + getVal('cand_kids') + "\nЖилье: " + getVal('cand_housing') + "\n\n";
+        fullText += "7. САМОПРЕЗЕНТАЦИЯ:\n1: " + getVal('pres_1') + "\n2: " + getVal('pres_2') + "\n3: " + getVal('pres_3') + "\n4: " + getVal('pres_4') + "\n5: " + getVal('pres_5') + "\n6: " + getVal('pres_6') + "\n7: " + getVal('pres_7') + "\n\n";
+        fullText += "9. КОНТАКТЫ:\nТелефон/TG: " + getVal('phone') + "\nВремя: " + getVal('call_time') + "\n\n";
 
-        // Сохраняем текст в скрытое поле для копирования
         document.getElementById('result').style.display = 'block';
         document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
-        
-        // Автоматически копируем в буфер при нажатии на кнопку ТГ
-        document.querySelector('.btn-tg').onclick = function() {
-            navigator.clipboard.writeText(text).then(() => {
-                alert("Текст анкеты скопирован! Сейчас откроется Telegram. Вставьте текст (Ctrl+V) в чат.");
-            });
-        };
-        
-        // Автоматически копируем при нажатии на почту
-        window.copyAndEmail = function() {
-            navigator.clipboard.writeText(text).then(() => {
-                alert("Текст анкеты скопирован! Сейчас откроется почта. Вставьте текст в письмо.");
-                window.open('https://mail.ru/', '_blank');
-            });
-        };
     });
+
+    // Отправка в ТГ (БЕЗ ВСПЛЫВАЮЩИХ ОКОН, просто копирует и открывает)
+    function sendToTG() {
+        navigator.clipboard.writeText(fullText).then(() => {
+            window.open('https://t.me/formula_alena', '_blank');
+        }).catch(err => {
+            // Если браузер не разрешает копирование, открываем ТГ, текст можно скопировать вручную
+            window.open('https://t.me/formula_alena', '_blank');
+        });
+    }
+
+    // Показ выбора почты
+    function showEmailOptions() {
+        var choiceDiv = document.getElementById('emailChoice');
+        if (choiceDiv.style.display === 'none' || choiceDiv.style.display === '') {
+            choiceDiv.style.display = 'block';
+        } else {
+            choiceDiv.style.display = 'none';
+        }
+    }
+
+    // Копирование текста при клике на почту
+    function copyText() {
+        navigator.clipboard.writeText(fullText).catch(err => {
+            console.log('Ошибка копирования');
+        });
+    }
 </script>
 </body>
 </html>
