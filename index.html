@@ -46,7 +46,7 @@
     </div>
 
     <form id="anketaForm">
-<div class="section-title">Часть 1. Основные данные</div>
+        <div class="section-title">Часть 1. Основные данные</div>
         <div class="form-row">
             <div class="form-group"><label>1.1 Имя</label><input type="text" id="name" required placeholder="Ваше имя"></div>
             <div class="form-group"><label>1.2 Возраст</label><input type="number" id="age" required placeholder="Лет"></div>
@@ -89,7 +89,7 @@
         <div class="form-row">
             <div class="form-group"><label>Город кандидата</label><input type="text" id="cand_city" placeholder="Где должен жить?"></div>
             <div class="form-group"><label>Возраст кандидата</label><input type="text" id="cand_age" placeholder="От и до"></div>
-</div>
+            </div>
         <div class="form-group"><label>Образование</label><input type="text" id="cand_edu" placeholder="ВО / не важно"></div>
         <div class="form-group"><label>Сфера деятельности</label><input type="text" id="cand_job" placeholder="Бизнес, творчество..."></div>
         <div class="form-row">
@@ -141,7 +141,7 @@
         text += "3.1 Выходной: " + getVal('weekend') + "\n3.2 Свободное время: " + getVal('leisure') + "\n3.3 80% времени: " + getVal('free_time') + "\n\n";
         text += "4.1 Разрушало: " + getVal('past') + "\n4.2 Боится: " + getVal('fears') + "\n\n";
         text += "5.1 Качества: " + getVal('qualities') + "\n5.2 Доказательство: " + getVal('proof') + "\n5.3 Доход: " + getVal('income') + "\n\n";
-text += "6. О КАНДИДАТЕ:\nГород: " + getVal('cand_city') + "\nВозраст: " + getVal('cand_age') + "\n";
+        text += "6. О КАНДИДАТЕ:\nГород: " + getVal('cand_city') + "\nВозраст: " + getVal('cand_age') + "\n";
         text += "Образование: " + getVal('cand_edu') + "\nСфера: " + getVal('cand_job') + "\nДети: " + getVal('cand_kids') + "\nЖилье: " + getVal('cand_housing') + "\n\n";
         text += "7. САМОПРЕЗЕНТАЦИЯ:\n1: " + getVal('pres_1') + "\n2: " + getVal('pres_2') + "\n3: " + getVal('pres_3') + "\n4: " + getVal('pres_4') + "\n5: " + getVal('pres_5') + "\n6: " + getVal('pres_6') + "\n7: " + getVal('pres_7') + "\n\n";
         text += "9. КОНТАКТЫ:\nТелефон/TG: " + getVal('phone') + "\nВремя: " + getVal('call_time') + "\n\n";
