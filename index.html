@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Анкета — ФОРМУЛА ЗНАКОМСТВ</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<style>
+    :root { --black: #0D0D0D; --gold: #D4AF37; --light-gold: #F5E6A3; --white: #FFFFFF; --grey: #1A1A1A; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background-color: var(--black); color: var(--white); font-family: 'Montserrat', sans-serif; padding: 40px 15px; display: flex; justify-content: center; line-height: 1.6; }
+    .container { max-width: 800px; width: 100%; background: linear-gradient(145deg, #121212, #0a0a0a); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 12px; padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+    
+    .header { text-align: center; margin-bottom: 40px; border-bottom: 1px solid rgba(212, 175, 55, 0.2); padding-bottom: 30px; }
+    .header h1 { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 26px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 5px; }
+    .header .private-club { font-family: 'Marck Script', cursive; color: var(--gold); font-size: 26px; margin-bottom: 20px; transform: rotate(-2deg); }
+    .header p { font-size: 14px; color: var(--light-gold); letter-spacing: 1px; font-weight: 500; line-height: 1.4; }
+    
+    .section-title { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 22px; margin: 40px 0 25px 0; font-style: italic; border-left: 3px solid var(--gold); padding-left: 15px; }
+    .form-group { margin-bottom: 22px; }
+    .form-row { display: flex; gap: 20px; }
+    .form-row .form-group { flex: 1; }
+    label { display: block; font-size: 12px; color: var(--light-gold); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: 500; }
+    input[type="text"], input[type="number"], textarea, select { width: 100%; background-color: var(--grey); border: 1px solid #333; color: var(--white); padding: 14px 16px; border-radius: 6px; font-family: 'Montserrat', sans-serif; font-size: 14px; transition: all 0.3s ease; }
+    input:focus, textarea:focus, select:focus { outline: none; border-color: var(--gold); background-color: #222; }
+    textarea { resize: vertical; min-height: 90px; }
+    
+    .submit-btn { width: 100%; background: linear-gradient(90deg, var(--gold), #b8952b); color: var(--black); border: none; padding: 20px; font-size: 16px; font-weight: 600; font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: 2px; border-radius: 6px; cursor: pointer; margin-top: 40px; transition: transform 0.2s; }
+    .submit-btn:hover { transform: translateY(-2px); }
+
+    #result { display: none; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(212, 175, 55, 0.3); text-align: center; }
+    .btn { display: block; width: 100%; padding: 18px; margin-top: 10px; text-decoration: none; font-size: 15px; font-weight: 600; text-transform: uppercase; border-radius: 6px; letter-spacing: 1px; transition: all 0.2s; cursor: pointer; border: none; }
+    .btn-tg { background: #229ED9; color: white; }
+    .btn-email { background: transparent; color: var(--light-gold); border: 1px solid var(--gold); }
+
+    @media (max-width: 600px) { .form-row { flex-direction: column; gap: 0; } .container { padding: 25px 20px; } }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Формула Знакомств</h1>
+        <div class="private-club">Private Club</div>
+        <p>Премиум-подбор партнёра<br>для серьёзных отношений</p>
+    </div>
+
+    <form id="anketaForm">
+<div class="section-title">Часть 1. Основные данные</div>
+        <div class="form-row">
+            <div class="form-group"><label>1.1 Имя</label><input type="text" id="name" required placeholder="Ваше имя"></div>
+            <div class="form-group"><label>1.2 Возраст</label><input type="number" id="age" required placeholder="Лет"></div>
+        </div>
+        <div class="form-group"><label>1.3 Город проживания (район/метро)</label><input type="text" id="city" required placeholder="Где вы живете?"></div>
+        <div class="form-row">
+            <div class="form-group"><label>1.4 Рост / Вес / Телосложение</label><input type="text" id="body" placeholder="Например: 175 / 65 / стройное"></div>
+            <div class="form-group">
+                <label>Семейное положение</label>
+                <select id="marital"><option>Не был(а) в браке</option><option>В разводе</option><option>Вдова / Вдовец</option></select>
+            </div>
+        </div>
+        <div class="form-group"><label>1.5 Профессия</label><input type="text" id="job" required placeholder="Например: IT-директор"></div>
+        <div class="form-group"><label>1.6 Главное увлечение</label><input type="text" id="hobby" placeholder="Хобби, страсть..."></div>
+
+        <div class="section-title">Часть 2. Ваши ценности и границы</div>
+        <div class="form-group"><label>2.1 Что для вас табу?</label><textarea id="taboo" placeholder="Что никогда не простите?"></textarea></div>
+        <div class="form-group"><label>2.2 Что НЕ принимаю в партнерах</label><textarea id="no_accept" placeholder="Стоп-факторы..."></textarea></div>
+        <div class="form-group"><label>2.3 Что важно в отношениях? (3 пункта)</label><textarea id="important" placeholder="Доверие, уважение..."></textarea></div>
+        <div class="form-group">
+            <label>2.4 Допускаете ли детей от прошлых отношений?</label>
+            <select id="kids"><option>Да</option><option>Нет</option><option>Только с обсуждения</option></select>
+        </div>
+
+        <div class="section-title">Часть 3. Образ жизни</div>
+        <div class="form-group"><label>3.1 Идеальный выходной</label><textarea id="weekend" placeholder="Опишите ваш идеальный день..."></textarea></div>
+        <div class="form-group"><label>3.2 Как предпочитаете проводить свободное время?</label><input type="text" id="leisure" placeholder="Активный отдых, театр..."></div>
+        <div class="form-group"><label>3.3 Где проводите 80% свободного времени?</label><input type="text" id="free_time" placeholder="Дом, спортзал..."></div>
+
+        <div class="section-title">Часть 4. Прошлый опыт и ожидания</div>
+        <div class="form-group"><label>4.1 Что чаще всего разрушало отношения?</label><textarea id="past" placeholder="Будьте честны..."></textarea></div>
+        <div class="form-group"><label>4.2 Чего боитесь больше всего?</label><textarea id="fears" placeholder="Предательство, рутина..."></textarea></div>
+
+        <div class="section-title">Часть 5. Глубокое интервью</div>
+        <div class="form-group"><label>5.1 Какие качества цените в людях?</label><textarea id="qualities" placeholder="Честность, юмор..."></textarea></div>
+        <div class="form-group"><label>5.2 Главное доказательство любви?</label><textarea id="proof" placeholder="Поступки, забота..."></textarea></div>
+        <div class="form-group"><label>5.3 Уровень дохода (конфиденциально)</label><input type="text" id="income" placeholder="Для понимания статуса"></div>
+
+        <div class="section-title">Часть 6. О кандидате</div>
+        <div class="form-row">
+            <div class="form-group"><label>Город кандидата</label><input type="text" id="cand_city" placeholder="Где должен жить?"></div>
+            <div class="form-group"><label>Возраст кандидата</label><input type="text" id="cand_age" placeholder="От и до"></div>
+</div>
+        <div class="form-group"><label>Образование</label><input type="text" id="cand_edu" placeholder="ВО / не важно"></div>
+        <div class="form-group"><label>Сфера деятельности</label><input type="text" id="cand_job" placeholder="Бизнес, творчество..."></div>
+        <div class="form-row">
+            <div class="form-group"><label>Дети у кандидата</label><input type="text" id="cand_kids" placeholder="Пожелания"></div>
+            <div class="form-group">
+                <label>Наличие жилья</label>
+                <select id="cand_housing"><option>Не важно</option><option>Обязательно свое</option><option>Допускается аренда</option></select>
+            </div>
+        </div>
+
+        <div class="section-title">Часть 7. Самопрезентация</div>
+        <div class="form-group"><label>7.1 Кто я и откуда</label><textarea id="pres_1" placeholder="Город, профессия..."></textarea></div>
+        <div class="form-group"><label>7.2 Главный урок из прошлых отношений</label><textarea id="pres_2" placeholder="Понял(а), что..."></textarea></div>
+        <div class="form-group"><label>7.3 Мои ценности (3-4)</label><textarea id="pres_3" placeholder="Честность, юмор..."></textarea></div>
+        <div class="form-group"><label>7.4 Мои интересы</label><textarea id="pres_4" placeholder="Люблю: ... Не люблю: ..."></textarea></div>
+        <div class="form-group"><label>7.5 Моя суперсила</label><textarea id="pres_5" placeholder="За что хвалят..."></textarea></div>
+        <div class="form-group"><label>7.6 Идеальный день</label><textarea id="pres_6" placeholder="Лучший выходной..."></textarea></div>
+        <div class="form-group"><label>7.7 Планы на будущее (через 3 года)</label><textarea id="pres_7" placeholder="Квартира у моря..."></textarea></div>
+
+        <div class="section-title">Часть 9. Контакты</div>
+        <div class="form-row">
+            <div class="form-group"><label>Телефон / Telegram</label><input type="text" id="phone" required placeholder="+7..."></div>
+            <div class="form-group"><label>Удобное время для звонка</label><input type="text" id="call_time" placeholder="После 18:00"></div>
+        </div>
+
+        <button type="submit" class="submit-btn" id="saveBtn">Отправить анкету</button>
+    </form>
+
+    <div id="result">
+        <p style="color: var(--light-gold); margin-bottom: 20px; font-weight: 500;">
+            Анкета сформирована!<br>Выберите способ отправки:
+        </p>
+        <a href="tg://resolve?domain=formula_alena" class="btn btn-tg" target="_blank">Скопировать текст и открыть Telegram</a>
+        <button onclick="copyAndEmail()" class="btn btn-email">Отправить на почту</button>
+    </div>
+</div>
+
+<script>
+    document.getElementById('anketaForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var getVal = function(id) { return document.getElementById(id).value || '-'; };
+        
+        var text = "ФОРМУЛА ЗНАКОМСТВ - АНКЕТА\n\n";
+        text += "1.1 Имя: " + getVal('name') + "\n1.2 Возраст: " + getVal('age') + "\n1.3 Город: " + getVal('city') + "\n";
+        text += "1.4 Рост/Вес: " + getVal('body') + "\nСемейное положение: " + getVal('marital') + "\n";
+        text += "1.5 Профессия: " + getVal('job') + "\n1.6 Увлечение: " + getVal('hobby') + "\n\n";
+        text += "2.1 Табу: " + getVal('taboo') + "\n2.2 Не принимаю: " + getVal('no_accept') + "\n";
+        text += "2.3 Важно: " + getVal('important') + "\n2.4 Дети: " + getVal('kids') + "\n\n";
+        text += "3.1 Выходной: " + getVal('weekend') + "\n3.2 Свободное время: " + getVal('leisure') + "\n3.3 80% времени: " + getVal('free_time') + "\n\n";
+        text += "4.1 Разрушало: " + getVal('past') + "\n4.2 Боится: " + getVal('fears') + "\n\n";
+        text += "5.1 Качества: " + getVal('qualities') + "\n5.2 Доказательство: " + getVal('proof') + "\n5.3 Доход: " + getVal('income') + "\n\n";
+text += "6. О КАНДИДАТЕ:\nГород: " + getVal('cand_city') + "\nВозраст: " + getVal('cand_age') + "\n";
+        text += "Образование: " + getVal('cand_edu') + "\nСфера: " + getVal('cand_job') + "\nДети: " + getVal('cand_kids') + "\nЖилье: " + getVal('cand_housing') + "\n\n";
+        text += "7. САМОПРЕЗЕНТАЦИЯ:\n1: " + getVal('pres_1') + "\n2: " + getVal('pres_2') + "\n3: " + getVal('pres_3') + "\n4: " + getVal('pres_4') + "\n5: " + getVal('pres_5') + "\n6: " + getVal('pres_6') + "\n7: " + getVal('pres_7') + "\n\n";
+        text += "9. КОНТАКТЫ:\nТелефон/TG: " + getVal('phone') + "\nВремя: " + getVal('call_time') + "\n\n";
+
+        // Сохраняем текст в скрытое поле для копирования
+        document.getElementById('result').style.display = 'block';
+        document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        
+        // Автоматически копируем в буфер при нажатии на кнопку ТГ
+        document.querySelector('.btn-tg').onclick = function() {
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Текст анкеты скопирован! Сейчас откроется Telegram. Вставьте текст (Ctrl+V) в чат.");
+            });
+        };
+        
+        // Автоматически копируем при нажатии на почту
+        window.copyAndEmail = function() {
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Текст анкеты скопирован! Сейчас откроется почта. Вставьте текст в письмо.");
+                window.open('https://mail.ru/', '_blank');
+            });
+        };
+    });
+</script>
+</body>
+</html>
