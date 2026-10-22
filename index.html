@@ -28,7 +28,6 @@
     .submit-btn { width: 100%; background: linear-gradient(90deg, var(--gold), #b8952b); color: var(--black); border: none; padding: 20px; font-size: 16px; font-weight: 600; font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: 2px; border-radius: 6px; cursor: pointer; margin-top: 40px; transition: transform 0.2s; }
     .submit-btn:hover { transform: translateY(-2px); }
 
-    /* Скрытый блок с результатами */
     #result { display: none; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(212, 175, 55, 0.3); text-align: center; }
     .btn { display: block; width: 100%; padding: 16px; margin-top: 10px; text-decoration: none; font-size: 14px; font-weight: 600; text-transform: uppercase; border-radius: 6px; letter-spacing: 1px; transition: all 0.2s; cursor: pointer; border: none; text-align: center; }
     
@@ -38,11 +37,13 @@
     .btn-email { background: transparent; color: var(--light-gold); border: 1px solid var(--gold); }
     .btn-email:hover { background: rgba(212, 175, 55, 0.1); }
 
-    /* Меню выбора почты */
     #emailChoice { display: none; margin-top: 10px; background: #222; padding: 15px; border-radius: 6px; border: 1px solid #D4AF37; text-align: left;}
     #emailChoice p { color: var(--light-gold); margin-bottom: 10px; font-size: 13px; text-align: center;}
-    .email-link { display: block; padding: 12px; margin-bottom: 5px; background: #fff; color: #000; text-decoration: none; border-radius: 4px; font-weight: bold; text-align: center; font-size: 14px;}
+    .email-link { display: block; padding: 12px; margin-bottom: 5px; background: #fff; color: #000; text-decoration: none; border-radius: 4px; font-weight: bold; text-align: center; font-size: 14px; cursor: pointer;}
     .email-link:hover { background: #ddd; }
+    /* Всплывающая подсказка */
+    #toast { visibility: hidden; min-width: 250px; margin-left: -125px; background-color: #D4AF37; color: #000; text-align: center; border-radius: 6px; padding: 16px; position: fixed; z-index: 999; left: 50%; bottom: 30px; font-size: 14px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.3s, bottom 0.3s; }
+    #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
 
     @media (max-width: 600px) { .form-row { flex-direction: column; gap: 0; } .container { padding: 25px 20px; } }
 </style>
@@ -131,7 +132,7 @@
 
     <div id="result">
         <p style="color: var(--light-gold); margin-bottom: 20px; font-weight: 500;">
-            Анкета сформирована!<br>Выберите, куда отправить (текст скопируется автоматически):
+            Анкета сформирована!<br>Выберите, куда отправить:
         </p>
         
         <button onclick="sendToTG()" class="btn btn-tg">Отправить в Telegram</button>
@@ -140,16 +141,18 @@
         
         <div id="emailChoice">
             <p>Выберите ваш почтовый сервис:</p>
-            <a href="https://mail.yandex.ru/compose?to=oksanchick84@ya.ru" target="_blank" class="email-link" onclick="copyText()">Яндекс.Почта</a>
-            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=oksanchick84@ya.ru" target="_blank" class="email-link" onclick="copyText()">Gmail</a>
-            <a href="https://e.mail.ru/compose/?to=oksanchick84@ya.ru" target="_blank" class="email-link" onclick="copyText()">Mail.ru</a>
+            <!-- ВАЖНО: onclick="copyText()" теперь стоит ПЕРЕД переходом по ссылке, чтобы текст успел скопироваться -->
+            <a class="email-link" onclick="copyText('yandex')">Яндекс.Почта</a>
+            <a class="email-link" onclick="copyText('gmail')">Gmail</a>
+            <a class="email-link" onclick="copyText('mail')">Mail.ru</a>
         </div>
     </div>
 </div>
 
+<div id="toast">Текст анкеты скопирован! Вставьте его в чат.</div>
+
 <script>
-    var fullText = ""; // Глобальная переменная для текста
-    // Сбор данных
+    var fullText = "";
     document.getElementById('anketaForm').addEventListener('submit', function(e) {
         e.preventDefault();
         var getVal = function(id) { return document.getElementById(id).value || '-'; };
@@ -172,17 +175,27 @@
         document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
     });
 
-    // Отправка в ТГ (БЕЗ ВСПЛЫВАЮЩИХ ОКОН, просто копирует и открывает)
+    // Функция для показа подсказки
+    function showToast() {
+        var toast = document.getElementById("toast");
+        toast.className = "show";
+        setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 4000);
+    }
+
+    // Отправка в ТГ: СНАЧАЛА копируем, ПОТОМ открываем
     function sendToTG() {
         navigator.clipboard.writeText(fullText).then(() => {
-            window.open('https://t.me/formula_alena', '_blank');
+            // Сначала показываем подсказку
+            showToast(); 
+            // Затем открываем ТГ через 100мс, чтобы подсказка успела прогрузиться
+            setTimeout(() => {
+                window.open('https://t.me/formula_alena', '_blank');
+            }, 100);
         }).catch(err => {
-            // Если браузер не разрешает копирование, открываем ТГ, текст можно скопировать вручную
             window.open('https://t.me/formula_alena', '_blank');
         });
     }
 
-    // Показ выбора почты
     function showEmailOptions() {
         var choiceDiv = document.getElementById('emailChoice');
         if (choiceDiv.style.display === 'none' || choiceDiv.style.display === '') {
@@ -192,10 +205,20 @@
         }
     }
 
-    // Копирование текста при клике на почту
-    function copyText() {
-        navigator.clipboard.writeText(fullText).catch(err => {
-            console.log('Ошибка копирования');
+    // Функция для копирования и перехода на почту
+    function copyText(service) {
+        navigator.clipboard.writeText(fullText).then(() => {
+            showToast();
+            setTimeout(() => {
+                if (service === 'yandex') window.open('https://mail.yandex.ru/compose?to=oksanchick84@ya.ru', '_blank');
+                if (service === 'gmail') window.open('https://mail.google.com/mail/?view=cm&fs=1&to=oksanchick84@ya.ru', '_blank');
+                if (service === 'mail') window.open('https://e.mail.ru/compose/?to=oksanchick84@ya.ru', '_blank');
+            }, 100);
+        }).catch(err => {
+            // Если копирование не удалось, все равно открываем
+                 if (service === 'yandex') window.open('https://mail.yandex.ru/compose?to=oksanchick84@ya.ru', '_blank');
+            if (service === 'gmail') window.open('https://mail.google.com/mail/?view=cm&fs=1&to=oksanchick84@ya.ru', '_blank');
+            if (service === 'mail') window.open('https://e.mail.ru/compose/?to=oksanchick84@ya.ru', '_blank');
         });
     }
 </script>
