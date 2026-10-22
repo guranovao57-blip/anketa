@@ -31,7 +31,6 @@
     #result { display: none; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(212, 175, 55, 0.3); text-align: center; }
     .btn { display: block; width: 100%; padding: 16px; margin-top: 10px; text-decoration: none; font-size: 14px; font-weight: 600; text-transform: uppercase; border-radius: 6px; letter-spacing: 1px; transition: all 0.2s; cursor: pointer; border: none; text-align: center; }
     
-    /* Кнопка ТГ */
     .btn-tg { background: #229ED9; color: white; }
     .btn-tg:hover { background: #1a7fb0; }
     
@@ -42,8 +41,11 @@
     #emailChoice p { color: var(--light-gold); margin-bottom: 10px; font-size: 13px; text-align: center;}
     .email-link { display: block; padding: 12px; margin-bottom: 5px; background: #fff; color: #000; text-decoration: none; border-radius: 4px; font-weight: bold; text-align: center; font-size: 14px; cursor: pointer;}
     .email-link:hover { background: #ddd; }
-    #toast { visibility: hidden; min-width: 250px; margin-left: -125px; background-color: #D4AF37; color: #000; text-align: center; border-radius: 6px; padding: 16px; position: fixed; z-index: 999; left: 50%; bottom: 30px; font-size: 14px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.3s, bottom 0.3s; }
+    /* Красивая золотая плашка-подсказка снизу */
+    #toast { visibility: hidden; min-width: 300px; max-width: 90%; background-color: #D4AF37; color: #000; text-align: center; border-radius: 8px; padding: 16px 20px; position: fixed; z-index: 9999; left: 50%; transform: translateX(-50%); bottom: 30px; font-size: 15px; font-weight: 600; box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4); opacity: 0; transition: opacity 0.3s, bottom 0.3s; }
     #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
+    
+    #toast span { display: block; font-size: 13px; font-weight: 400; margin-top: 5px; }
 
     @media (max-width: 600px) { .form-row { flex-direction: column; gap: 0; } .container { padding: 25px 20px; } }
 </style>
@@ -91,7 +93,6 @@
         <div class="section-title">Часть 4. Прошлый опыт и ожидания</div>
         <div class="form-group"><label>4.1 Что чаще всего разрушало отношения?</label><textarea id="past" placeholder="Будьте честны..."></textarea></div>
         <div class="form-group"><label>4.2 Чего боитесь больше всего?</label><textarea id="fears" placeholder="Предательство, рутина..."></textarea></div>
-
         <div class="section-title">Часть 5. Глубокое интервью</div>
         <div class="form-group"><label>5.1 Какие качества цените в людях?</label><textarea id="qualities" placeholder="Честность, юмор..."></textarea></div>
         <div class="form-group"><label>5.2 Главное доказательство любви?</label><textarea id="proof" placeholder="Поступки, забота..."></textarea></div>
@@ -135,7 +136,7 @@
             Анкета сформирована!<br>Выберите, куда отправить:
         </p>
         
-        <!-- ССЫЛКА ИМЕННО ТАКАЯ, КАК ВЫ ПРОСИЛИ -->
+        <!-- Ссылка для ТГ -->
         <a href="https://t.me/formula_alena" target="_blank" class="btn btn-tg" onclick="copyTextOnly()">Отправить в Telegram</a>
         
         <button onclick="showEmailOptions()" class="btn btn-email">Отправить на почту</button>
@@ -149,10 +150,14 @@
     </div>
 </div>
 
-<div id="toast">Текст анкеты скопирован! Вставьте его в чат.</div>
-
+<!-- Сама плашка с подсказкой -->
+<div id="toast">
+    Текст анкеты скопирован!
+    <span>Просто вставьте его в чат (Ctrl+V)</span>
+</div>
 <script>
-    var fullText = "";
+    var fullText = ""; 
+
     document.getElementById('anketaForm').addEventListener('submit', function(e) {
         e.preventDefault();
         var getVal = function(id) { return document.getElementById(id).value || '-'; };
@@ -178,10 +183,11 @@
     function showToast() {
         var toast = document.getElementById("toast");
         toast.className = "show";
-        setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 4000);
+        // Скрываем через 5 секунд
+        setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 5000);
     }
 
-    // Копируем текст при клике на ссылку ТГ
+    // Копируем текст и показываем подсказку
     function copyTextOnly() {
         navigator.clipboard.writeText(fullText).then(() => {
             showToast();
