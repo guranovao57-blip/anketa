@@ -31,6 +31,7 @@
     #result { display: none; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(212, 175, 55, 0.3); text-align: center; }
     .btn { display: block; width: 100%; padding: 16px; margin-top: 10px; text-decoration: none; font-size: 14px; font-weight: 600; text-transform: uppercase; border-radius: 6px; letter-spacing: 1px; transition: all 0.2s; cursor: pointer; border: none; text-align: center; }
     
+    /* Кнопка ТГ (ссылка, как на сайте) */
     .btn-tg { background: #229ED9; color: white; }
     .btn-tg:hover { background: #1a7fb0; }
     
@@ -41,7 +42,7 @@
     #emailChoice p { color: var(--light-gold); margin-bottom: 10px; font-size: 13px; text-align: center;}
     .email-link { display: block; padding: 12px; margin-bottom: 5px; background: #fff; color: #000; text-decoration: none; border-radius: 4px; font-weight: bold; text-align: center; font-size: 14px; cursor: pointer;}
     .email-link:hover { background: #ddd; }
-    /* Всплывающая подсказка */
+
     #toast { visibility: hidden; min-width: 250px; margin-left: -125px; background-color: #D4AF37; color: #000; text-align: center; border-radius: 6px; padding: 16px; position: fixed; z-index: 999; left: 50%; bottom: 30px; font-size: 14px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.3s, bottom 0.3s; }
     #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
 
@@ -91,7 +92,6 @@
         <div class="section-title">Часть 4. Прошлый опыт и ожидания</div>
         <div class="form-group"><label>4.1 Что чаще всего разрушало отношения?</label><textarea id="past" placeholder="Будьте честны..."></textarea></div>
         <div class="form-group"><label>4.2 Чего боитесь больше всего?</label><textarea id="fears" placeholder="Предательство, рутина..."></textarea></div>
-
         <div class="section-title">Часть 5. Глубокое интервью</div>
         <div class="form-group"><label>5.1 Какие качества цените в людях?</label><textarea id="qualities" placeholder="Честность, юмор..."></textarea></div>
         <div class="form-group"><label>5.2 Главное доказательство любви?</label><textarea id="proof" placeholder="Поступки, забота..."></textarea></div>
@@ -135,13 +135,13 @@
             Анкета сформирована!<br>Выберите, куда отправить:
         </p>
         
-        <button onclick="sendToTG()" class="btn btn-tg">Отправить в Telegram</button>
+        <!-- ВЕРНУЛИ КНОПКУ ТГ КАК ССЫЛКУ (РАБОТАЕТ КАК НА САЙТЕ) -->
+        <a href="tg://resolve?domain=formula_alena" class="btn btn-tg" onclick="copyTextOnly()">Отправить в Telegram</a>
         
         <button onclick="showEmailOptions()" class="btn btn-email">Отправить на почту</button>
         
         <div id="emailChoice">
             <p>Выберите ваш почтовый сервис:</p>
-            <!-- ВАЖНО: onclick="copyText()" теперь стоит ПЕРЕД переходом по ссылке, чтобы текст успел скопироваться -->
             <a class="email-link" onclick="copyText('yandex')">Яндекс.Почта</a>
             <a class="email-link" onclick="copyText('gmail')">Gmail</a>
             <a class="email-link" onclick="copyText('mail')">Mail.ru</a>
@@ -175,24 +175,19 @@
         document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
     });
 
-    // Функция для показа подсказки
+    // Подсказка
     function showToast() {
         var toast = document.getElementById("toast");
         toast.className = "show";
         setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 4000);
     }
 
-    // Отправка в ТГ: СНАЧАЛА копируем, ПОТОМ открываем
-    function sendToTG() {
+    // При клике на ТГ просто копируем текст (без задержек), переход по ссылке произойдет автоматически
+    function copyTextOnly() {
         navigator.clipboard.writeText(fullText).then(() => {
-            // Сначала показываем подсказку
-            showToast(); 
-            // Затем открываем ТГ через 100мс, чтобы подсказка успела прогрузиться
-            setTimeout(() => {
-                window.open('https://t.me/formula_alena', '_blank');
-            }, 100);
+            showToast();
         }).catch(err => {
-            window.open('https://t.me/formula_alena', '_blank');
+            console.log('Ошибка копирования');
         });
     }
 
@@ -205,7 +200,6 @@
         }
     }
 
-    // Функция для копирования и перехода на почту
     function copyText(service) {
         navigator.clipboard.writeText(fullText).then(() => {
             showToast();
@@ -215,8 +209,7 @@
                 if (service === 'mail') window.open('https://e.mail.ru/compose/?to=oksanchick84@ya.ru', '_blank');
             }, 100);
         }).catch(err => {
-            // Если копирование не удалось, все равно открываем
-                 if (service === 'yandex') window.open('https://mail.yandex.ru/compose?to=oksanchick84@ya.ru', '_blank');
+            if (service === 'yandex') window.open('https://mail.yandex.ru/compose?to=oksanchick84@ya.ru', '_blank');
             if (service === 'gmail') window.open('https://mail.google.com/mail/?view=cm&fs=1&to=oksanchick84@ya.ru', '_blank');
             if (service === 'mail') window.open('https://e.mail.ru/compose/?to=oksanchick84@ya.ru', '_blank');
         });
